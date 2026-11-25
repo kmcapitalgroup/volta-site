@@ -7,13 +7,14 @@
 <meta name="description" content="Convocations, compo, match en direct, messagerie encadrée, pièces et cotisations : Volta fait vivre ton club toute la semaine. Foot, hand, basket, rugby, volley.">
 <meta property="og:title" content="Volta · l'app des clubs de sport amateur">
 <meta property="og:description" content="Le match en direct, les cartes joueurs, le récap du dimanche. Et toute l'organisation du club, sans tableur.">
-<meta property="og:image" content="img/compo-titulaire.webp">
+<meta property="og:image" content="https://kmcapitalgroup.github.io/volta-site/img/compo-titulaire.webp">
 <meta name="theme-color" content="#0B0D11">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D4FF3F'/%3E%3Cpath d='M18 4 8 18h7l-2 10 11-15h-7z' fill='%230B0D11'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
 </head>
 <body>
 
@@ -24,134 +25,253 @@
   </a>
   <nav aria-label="Sections">
     <a href="#direct">Le direct</a>
+    <a href="#carte">Les cartes</a>
     <a href="#club">Le club</a>
     <a href="#confiance">Confiance</a>
-    <a href="#faq">Questions</a>
   </nav>
-  <a class="btn small" href="#lancement">Bientôt dispo</a>
+  <a class="btn small" href="#telecharger">Télécharger</a>
 </header>
 
 <main id="top">
 
+<!-- ============ HERO : le banc et la tribune, synchronisés ============ -->
 <section class="hero">
-  <div class="hero-text">
+  <div class="hero-text reveal">
     <p class="kicker">Foot · Hand · Basket · Rugby · Volley</p>
     <h1>Ton club,<br><span class="volt">en direct.</span></h1>
-    <p class="lead">Volta fait vivre le club toute la semaine : convocations, compo, covoiturage, match en direct, messagerie encadrée, pièces et cotisations. Les joueurs reviennent pour leur carte. Les parents savent tout sans relancer personne.</p>
+    <p class="lead">Le coach saisit le match depuis le banc. Les parents le vivent en direct, où qu'ils soient. Et toute la semaine, l'app fait vivre le club : convocations, compo, covoiturage, chat encadré.</p>
     <div class="ctas">
-      <a class="btn" href="#lancement">Inscrire mon club</a>
-      <a class="btn ghost" href="#direct">Voir le direct</a>
+      <a class="btn" href="#telecharger">Télécharger Volta</a>
+      <a class="btn ghost" href="#direct">Voir comment ça marche</a>
     </div>
-    <ul class="proof">
-      <li><b>2 gestes</b> pour saisir un but depuis le banc</li>
-      <li><b>0 €</b> encaissé par Volta : l'argent reste au club</li>
-      <li><b>iPhone, Android</b> et une vraie version tablette</li>
-    </ul>
+    <ol class="steps" id="steps" aria-label="Saisir une action en deux gestes">
+      <li data-step="1"><span>1</span>Le coach touche le joueur</li>
+      <li data-step="2"><span>2</span>Il choisit l'action</li>
+      <li data-step="3"><span>3</span>La tribune vibre</li>
+    </ol>
   </div>
-  <div class="hero-phones" aria-hidden="true">
-    <figure class="phone back"><img src="img/accueil.webp" alt="" width="560" height="1212"></figure>
-    <figure class="phone front"><img src="img/direct-but.webp" alt="" width="560" height="1212"></figure>
+
+  <div class="hero-stage" id="live" aria-label="Démonstration animée : à gauche le téléphone du coach, à droite celui d'un parent">
+    <!-- Téléphone du coach -->
+    <div class="device bench">
+      <div class="screen">
+        <div class="sb"><span>15:58</span><span class="sb-r"><i></i><i></i><i></i></span></div>
+        <div class="b-top"><span class="b-back">‹</span><span class="pill live"><b></b>EN DIRECT · 2e MT</span></div>
+        <div class="score-card">
+          <div class="team"><span class="badge v">FRG</span><small>Rive Gauche</small></div>
+          <div class="score"><span class="sc" data-home>1</span><span class="colon">:</span><span class="sc" data-away>1</span><em data-min>52’</em></div>
+          <div class="team"><span class="badge">CRO</span><small>Croix-Rousse</small></div>
+        </div>
+        <p class="mini-label">Sur le terrain · touchez un joueur</p>
+        <div class="chips">
+          <span class="chip"><b>1</b>Fontaine</span>
+          <span class="chip"><b>2</b>Chevalier</span>
+          <span class="chip" data-p="girard"><b>4</b>Girard<i class="ycard"></i></span>
+          <span class="chip"><b>5</b>Lambert</span>
+          <span class="chip"><b>3</b>Dubois</span>
+          <span class="chip"><b>6</b>Benali</span>
+          <span class="chip" data-p="royer"><b>8</b>Royer<i class="ball"></i></span>
+          <span class="chip"><b>10</b>Chaouch</span>
+          <span class="chip"><b>7</b>Kaci</span>
+          <span class="chip"><b>9</b>Martin</span>
+          <span class="chip"><b>11</b>Petit</span>
+        </div>
+        <div class="feed" data-feed="bench">
+          <div class="ev"><em>45’</em><i class="dot g"></i>Reprise</div>
+          <div class="ev"><em>31’</em><i class="dot v"></i>But de Rayan Benali</div>
+        </div>
+        <div class="sheet" data-sheet>
+          <div class="grab"></div>
+          <p class="sheet-t" data-sheet-title>8 · Noah Royer</p>
+          <div class="acts">
+            <span class="act v" data-act="but">But</span>
+            <span class="act">Passe déc.</span>
+            <span class="act" data-act="jaune"><i class="ycard"></i>Carton jaune</span>
+            <span class="act">Changement</span>
+          </div>
+        </div>
+        <div class="tap" data-tap></div>
+      </div>
+      <p class="device-cap">Le banc</p>
+    </div>
+
+    <!-- Téléphone d'un parent -->
+    <div class="device stand">
+      <div class="screen">
+        <div class="sb"><span>15:58</span><span class="sb-r"><i></i><i></i><i></i></span></div>
+        <p class="t-head">U17 A · Rive Gauche – Croix-Rousse</p>
+        <div class="t-score">
+          <span class="badge v">FRG</span>
+          <span class="t-num"><span data-home>1</span> : <span data-away>1</span></span>
+          <span class="badge">CRO</span>
+        </div>
+        <p class="t-min"><b></b><span data-min>52’</span> · 2e mi-temps</p>
+        <div class="toast" data-toast><i class="ycard"></i><span>56’ · Carton jaune pour Tom Girard</span></div>
+        <div class="feed" data-feed="stand">
+          <div class="ev"><em>45’</em><i class="dot g"></i>Reprise</div>
+          <div class="ev"><em>31’</em><i class="dot v"></i>But de Rayan Benali</div>
+        </div>
+        <div class="reacts">
+          <span>👏 <b data-r="clap">18</b></span>
+          <span>🔥 <b data-r="fire">9</b></span>
+          <span>💪 <b data-r="flex">6</b></span>
+        </div>
+        <div class="goal" data-goal>
+          <div class="rays"></div>
+          <p class="goal-word">BUT</p>
+          <p class="goal-score"><span class="badge v">FRG</span> 2 : 1 <span class="badge">CRO</span></p>
+          <div class="goal-card"><span class="num">8</span><div><small>54’ · 2e BUT DU MATCH</small><b>Noah Royer</b><em>Passe décisive de Rayan Benali</em></div></div>
+        </div>
+      </div>
+      <p class="device-cap">La tribune</p>
+    </div>
   </div>
 </section>
 
+<!-- ============ LE DIRECT ============ -->
 <section id="direct" class="band">
   <div class="split">
-    <div>
+    <div class="reveal">
       <p class="kicker">Le match en direct</p>
       <h2>Le banc saisit.<br>La tribune vibre.</h2>
-      <p>Le coach touche le joueur, puis l'action : but, passe, carton, changement. Les parents restés à la maison voient chaque action arriver avec sa séquence animée, le score et le chrono. Après le coup de sifflet, le coach et l'arbitre signent la feuille de match dans l'app.</p>
+      <p>Deux gestes pour un but, un carton ou un changement. Les parents restés à la maison voient chaque action arriver avec sa séquence animée, le score et le chrono. Après le coup de sifflet, le coach et l'arbitre signent la feuille de match dans l'app.</p>
       <ul class="ticks">
         <li>Durée, mi-temps et nombre de joueurs selon le sport et la catégorie, modifiables par le coach</li>
         <li>Les règles de chaque sport : remplacements, exclusions de 2 minutes, cartons temporaires, fautes</li>
-        <li>Fil du match partagé avec toute la famille du club</li>
+        <li>Les stats de la saison se remplissent toutes seules</li>
       </ul>
     </div>
-    <div class="phones-row">
-      <figure class="phone"><img src="img/direct-banc.webp" alt="Le banc du coach : le terrain, les joueurs à toucher et le fil du match" loading="lazy" width="560" height="1212"><figcaption>Le banc</figcaption></figure>
-      <figure class="phone raise"><img src="img/direct-changement.webp" alt="La tribune : l'entrée en jeu d'un remplaçant" loading="lazy" width="560" height="1212"><figcaption>La tribune</figcaption></figure>
+    <div class="phones-row reveal">
+      <figure class="shot"><img src="img/direct-banc.webp" alt="Le banc du coach : le terrain, les joueurs à toucher et le fil du match" loading="lazy" width="560" height="1212"><figcaption>Le banc, en vrai</figcaption></figure>
+      <figure class="shot raise"><img src="img/direct-changement.webp" alt="La tribune : l'entrée en jeu d'un remplaçant" loading="lazy" width="560" height="1212"><figcaption>Un changement</figcaption></figure>
     </div>
   </div>
 </section>
 
-<section class="band">
+<!-- ============ CARTES ET RÉCAP ============ -->
+<section id="carte" class="band glow-ice">
   <div class="split reverse">
-    <div class="phones-row">
-      <figure class="phone"><img src="img/compo-titulaire.webp" alt="La compo dévoile la carte du titulaire avec sa note Volta" loading="lazy" width="560" height="1212"><figcaption>La compo</figcaption></figure>
-      <figure class="phone raise"><img src="img/recap-1.webp" alt="Le récap du dimanche : ta semaine U17 A" loading="lazy" width="560" height="1212"><figcaption>Le récap du dimanche</figcaption></figure>
+    <div class="phones-row live-row reveal">
+      <div class="device card-phone" id="cardPhone">
+        <div class="screen">
+          <div class="sb"><span>18:04</span><span class="sb-r"><i></i><i></i><i></i></span></div>
+          <p class="c-head">Compo · Sam. 28 · 15:00</p>
+          <div class="seg"><span data-seg="0" class="on">Noah · titulaire</span><span data-seg="1">Malik · remplaçant</span></div>
+          <div class="card-stage">
+            <div class="pcard" data-card>
+              <div class="pc-top">
+                <div><b class="pc-rate" data-count="84">84</b><span class="pc-pos" data-pos>MG</span><span class="pc-no" data-no>n°8</span></div>
+                <span class="pc-av" data-av>NR</span>
+              </div>
+              <p class="pc-name" data-name>ROYER</p>
+              <div class="pc-stats">
+                <span><b data-count="93">93</b> PRÉ</span><span><b data-count="612">612</b> MIN</span><span><b data-count="4">4</b> BUT</span>
+                <span><b data-count="3">3</b> PD</span><span><b data-count="88">88</b> FOR</span><span><b data-count="2">2</b> JDM</span>
+              </div>
+              <p class="pc-club">FC RIVE GAUCHE · U17 A</p>
+              <i class="sheen"></i>
+            </div>
+          </div>
+          <p class="c-foot" data-foot>Titulaire · milieu gauche · 4-3-3</p>
+          <div class="c-pills" data-pills><span>4 buts cette saison</span><span>3 passes décisives</span><span>2 fois joueur du match</span></div>
+          <div class="c-btn">📷 Ajouter ma photo sur la carte</div>
+        </div>
+        <p class="device-cap">La compo du samedi</p>
+      </div>
+      <div class="device story-phone raise" id="story">
+        <div class="screen">
+          <div class="bars" data-bars></div>
+          <img class="story-img" data-story src="img/recap-1.webp" alt="Le récap du dimanche, écran par écran" width="560" height="1212">
+        </div>
+        <p class="device-cap">Le récap du dimanche, 18 h</p>
+      </div>
     </div>
-    <div>
+    <div class="reveal">
       <p class="kicker">Ce qui fait revenir</p>
       <h2>Chaque joueur a sa carte.</h2>
       <p>Quand le coach publie la compo, chaque joueur découvre sa carte : poste, numéro et une note Volta calculée sur la saison à partir de la présence, des minutes, des buts, des passes et des votes « joueur du match ». Elle monte quand on vient à l'entraînement.</p>
-      <p>Le dimanche à 18 h, chaque équipe reçoit son récap de la semaine en plein écran : résultats, buteurs, série de présence, joueur du match. Pas besoin d'e-mail pour que tout le monde ouvre l'app.</p>
+      <p>Le dimanche à 18 h, chaque équipe reçoit son récap de la semaine en plein écran : résultats, buteurs, série de présence, joueur du match. Personne n'a besoin d'un e-mail pour ouvrir l'app.</p>
     </div>
   </div>
 </section>
 
+<!-- ============ LE CLUB ============ -->
 <section id="club" class="band">
   <p class="kicker center">L'organisation du club</p>
   <h2 class="center">Tout ce que le tableur faisait mal.</h2>
   <div class="grid">
-    <article class="card">
-      <img src="img/covoiturage.webp" alt="Le covoiturage d'un déplacement" loading="lazy" width="560" height="1212">
+    <article class="card reveal">
+      <div class="card-img"><img src="img/covoiturage.webp" alt="Le covoiturage d'un déplacement" loading="lazy" width="560" height="1212"></div>
       <h3>Convocations et covoiturage</h3>
-      <p>Un événement récurrent se crée en une fois pour toute la saison. Les familles répondent présent ou absent, proposent une place dans leur voiture, reçoivent un rappel la veille.</p>
+      <p>Un entraînement récurrent se crée une fois pour la saison. Les familles répondent, proposent une place en voiture et reçoivent un rappel la veille.</p>
     </article>
-    <article class="card">
-      <img src="img/assiduite.webp" alt="La grille d'assiduité avec l'alerte de décrochage" loading="lazy" width="560" height="1212">
+    <article class="card reveal">
+      <div class="card-img"><img src="img/assiduite.webp" alt="La grille d'assiduité avec l'alerte de décrochage" loading="lazy" width="560" height="1212"></div>
       <h3>Assiduité et décrochage</h3>
-      <p>L'appel du coach alimente la grille de la saison. Trois absences d'affilée ou une présence qui chute, et le coach est prévenu avant que le joueur ne quitte le club.</p>
+      <p>L'appel du coach alimente la grille de la saison. Trois absences d'affilée ou une présence qui chute, et le coach est prévenu avant que le joueur ne lâche.</p>
     </article>
-    <article class="card">
-      <img src="img/pieces-licences.webp" alt="Les pièces manquantes, à valider et complètes" loading="lazy" width="560" height="1212">
+    <article class="card reveal">
+      <div class="card-img"><img src="img/pieces-licences.webp" alt="Les pièces manquantes, à valider et complètes" loading="lazy" width="560" height="1212"></div>
       <h3>Pièces et licences</h3>
-      <p>Certificat médical, autorisation de sortie, licence : les familles les envoient depuis leur téléphone, le dirigeant valide ou refuse, et relance d'un geste ceux qui manquent.</p>
+      <p>Certificat médical, autorisation de sortie, licence : les familles les envoient depuis leur téléphone, le dirigeant valide et relance d'un geste.</p>
     </article>
-    <article class="card">
-      <img src="img/stats-equipe.webp" alt="Les statistiques de l'équipe" loading="lazy" width="560" height="1212">
+    <article class="card reveal">
+      <div class="card-img"><img src="img/stats-equipe.webp" alt="Les statistiques de l'équipe" loading="lazy" width="560" height="1212"></div>
       <h3>Stats de la saison</h3>
-      <p>Buteurs, passeurs, minutes jouées, joueurs du match : tout sort automatiquement des matchs saisis en direct.</p>
+      <p>Buteurs, passeurs, minutes jouées, joueurs du match : tout sort des matchs saisis en direct.</p>
     </article>
-    <article class="card">
-      <img src="img/fil-du-club.webp" alt="Le fil du club avec un sondage" loading="lazy" width="560" height="1212">
+    <article class="card reveal">
+      <div class="card-img"><img src="img/fil-du-club.webp" alt="Le fil du club avec un sondage" loading="lazy" width="560" height="1212"></div>
       <h3>Le fil du club</h3>
-      <p>Annonces, photos, sondages, commentaires. Chacun voit ce qui concerne son équipe, et le bureau parle à tout le club d'un coup.</p>
+      <p>Annonces, photos, sondages. Chacun voit ce qui concerne son équipe, et le bureau parle à tout le club d'un coup.</p>
     </article>
-    <article class="card">
-      <img src="img/fiche-joueur.webp" alt="La fiche d'un joueur" loading="lazy" width="560" height="1212">
+    <article class="card reveal">
+      <div class="card-img"><img src="img/fiche-joueur.webp" alt="La fiche d'un joueur" loading="lazy" width="560" height="1212"></div>
       <h3>La fiche joueur</h3>
-      <p>Contacts des responsables légaux, pièces, cotisation, présence et stats sur une seule page, visible du staff et du joueur lui-même.</p>
+      <p>Responsables légaux, pièces, cotisation, présence et stats sur une seule page.</p>
     </article>
   </div>
 </section>
 
+<!-- ============ CONFIANCE ============ -->
 <section id="confiance" class="band trust">
   <div class="split">
-    <div>
+    <div class="reveal">
       <p class="kicker">Confiance</p>
       <h2>Pensé pour des clubs où jouent des mineurs.</h2>
       <ul class="ticks">
-        <li><b>Messagerie modérée automatiquement.</b> Les gros mots sont masqués, les insultes bloquées, les menaces signalées au staff. Pas de numéro, d'e-mail ni de pseudo de réseau social dans un canal où il y a un mineur.</li>
-        <li><b>Données cloisonnées.</b> Enfants, responsables légaux, cotisations et photos ne sont accessibles que par des fonctions serveur, testées rôle par rôle à chaque version.</li>
-        <li><b>Photos validées par les parents.</b> Le selfie d'un joueur de moins de 15 ans n'apparaît qu'après accord d'un parent.</li>
-        <li><b>Volta ne touche pas à l'argent.</b> Le club encaisse comme il le fait déjà (HelloAsso, virement, chèque). Volta suit qui a payé et envoie les rappels.</li>
+        <li><b>Chat modéré automatiquement.</b> Les gros mots sont masqués, les insultes bloquées, les menaces signalées au staff. Pas de numéro ni de réseau social dans un groupe où il y a un mineur.</li>
+        <li><b>Données cloisonnées.</b> Enfants, responsables légaux, cotisations et photos ne sont lisibles que par les bonnes personnes, vérifié rôle par rôle à chaque version.</li>
+        <li><b>Photos validées par les parents</b> pour les moins de 15 ans.</li>
+        <li><b>Volta ne touche pas à l'argent.</b> Le club encaisse comme d'habitude, Volta suit qui a payé et relance.</li>
         <li><b>Aucune IA externe</b> ne lit les messages du club.</li>
       </ul>
     </div>
-    <div class="phones-row">
-      <figure class="phone"><img src="img/chat-moderation.webp" alt="Un message bloqué par la modération, avec la raison" loading="lazy" width="560" height="1212"><figcaption>Le chat d'équipe</figcaption></figure>
-      <figure class="phone raise"><img src="img/notifications.webp" alt="Les notifications" loading="lazy" width="560" height="1212"><figcaption>Les notifications</figcaption></figure>
+    <div class="phones-row single reveal">
+      <div class="device chat-phone" id="chat">
+        <div class="screen">
+          <div class="sb"><span>19:12</span><span class="sb-r"><i></i><i></i><i></i></span></div>
+          <div class="ch-head"><span class="ch-av">U17</span><div><b>U17 A · Équipe</b><small>22 joueurs · 14 parents</small></div></div>
+          <p class="ch-note">Groupe modéré automatiquement</p>
+          <div class="msgs" data-msgs></div>
+          <div class="blocked" data-blocked><b>Message non envoyé</b>Pas de numéro de téléphone dans un groupe avec des mineurs.</div>
+          <div class="composer"><span data-typing></span><i class="caret"></i><span class="send">↑</span></div>
+        </div>
+        <p class="device-cap">Le chat d'équipe</p>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- ============ TABLETTE ============ -->
 <section class="band">
   <p class="kicker center">Sur tablette</p>
   <h2 class="center">Une vraie version iPad et Android.</h2>
-  <p class="center narrow">Pas un téléphone étiré : les onglets passent dans une barre latérale, le terrain et le fil du match s'affichent côte à côte. Idéal posé sur le banc.</p>
-  <figure class="tablet"><img src="img/ipad-direct-banc.webp" alt="Sur iPad : le banc à gauche, le fil du match à droite" loading="lazy" width="1400" height="1050"></figure>
+  <p class="center narrow">Les onglets passent dans une barre latérale, le terrain et le fil du match s'affichent côte à côte. Posée sur le banc, c'est la table de marque du coach.</p>
+  <figure class="tablet reveal"><img src="img/ipad-direct-banc.webp" alt="Sur iPad : le banc à gauche, le fil du match à droite" loading="lazy" width="1400" height="1050"></figure>
 </section>
 
+<!-- ============ FAQ ============ -->
 <section id="faq" class="band">
   <h2 class="center">Questions fréquentes</h2>
   <div class="faq">
@@ -169,7 +289,7 @@
     </details>
     <details>
       <summary>Où sont stockées les données ?</summary>
-      <p>Sur une base Supabase dédiée à Volta. Les fichiers (photos, pièces) sont dans des espaces de stockage privés, jamais dans la base, et chaque accès passe par des règles vérifiées côté serveur.</p>
+      <p>Sur une base dédiée à Volta. Les fichiers (photos, pièces) sont dans des espaces de stockage privés, et chaque accès passe par des règles vérifiées côté serveur.</p>
     </details>
     <details>
       <summary>Faut-il une tablette ?</summary>
@@ -178,12 +298,19 @@
   </div>
 </section>
 
-<section id="lancement" class="band launch">
-  <h2>Bientôt sur l'App Store et Google Play.</h2>
-  <p>Volta est en cours de finition. Tu veux équiper ton club dès le lancement ?</p>
-  <div class="ctas center">
-    <span class="store">App Store · bientôt</span>
-    <span class="store">Google Play · bientôt</span>
+<!-- ============ TÉLÉCHARGER ============ -->
+<section id="telecharger" class="band launch">
+  <h2>Ton club mérite mieux qu'un groupe WhatsApp.</h2>
+  <p>Volta arrive sur l'App Store et Google Play.</p>
+  <div class="stores">
+    <span class="store-badge">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 5c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5z"/></svg>
+      <span><small>Bientôt sur</small>App Store</span>
+    </span>
+    <span class="store-badge">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.6 1.8c-.3.3-.4.7-.4 1.3v17.8c0 .6.2 1 .4 1.3l10-10.2-10-10.2zm11.2 9L5.2.8l11.9 6.8-2.3 3.2zm0 2.4 2.3 3.2-11.9 6.8 9.6-10zm5.6-2.6-2.6-1.5-2.6 2.9 2.6 2.9 2.6-1.5c.7-.4.7-1.4 0-2.8z"/></svg>
+      <span><small>Bientôt sur</small>Google Play</span>
+    </span>
   </div>
 </section>
 
