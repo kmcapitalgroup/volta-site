@@ -421,3 +421,5 @@ details p { padding-bottom: 20px; margin: 0; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; translate: 0 0; }
 }
+.foot a { color: var(--muted); text-decoration: none; }
+.foot a:hover { color: var(--chalk); }
