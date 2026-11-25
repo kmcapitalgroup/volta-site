@@ -36,6 +36,15 @@
   <div class="card">
     <section id="loading"><h1>Un instant…</h1></section>
 
+    <section id="verify" hidden>
+      <h1 id="vtitle">Confirme ton adresse</h1>
+      <p id="vtext">Un dernier geste pour activer ton compte Volta.</p>
+      <form id="vform" novalidate>
+        <p class="err" id="verr" role="alert"></p>
+        <button class="btn" type="submit" id="vsubmit">Confirmer</button>
+      </form>
+    </section>
+
     <section id="confirmed" hidden>
       <h1>Adresse confirmée</h1>
       <p>Ton compte Volta est prêt. Retourne dans l’app et connecte-toi avec ton e-mail et ton mot de passe.</p>
@@ -78,7 +87,7 @@
   history.replaceState(null, '', location.pathname);
 
   function show(id) {
-    ['loading', 'confirmed', 'recovery', 'changed', 'failed'].forEach(function (s) {
+    ['loading', 'verify', 'confirmed', 'recovery', 'changed', 'failed'].forEach(function (s) {
       document.getElementById(s).hidden = s !== id;
     });
   }
@@ -86,7 +95,56 @@
   var token = q.get('access_token');
   var type = q.get('type');
   if (q.get('error') || q.get('error_code')) return show('failed');
-  if (type === 'recovery' && token) {
+
+  // Liens des e-mails Volta : ?token_hash=…&type=…. Le jeton n'est utilisé
+  // qu'au clic sur le bouton, pour qu'un antivirus de messagerie qui ouvre
+  // le lien avant toi ne le consomme pas.
+  var hash = q.get('token_hash');
+  if (hash && /^(signup|email|recovery|email_change|invite)$/.test(type || '')) {
+    var vbtn = document.getElementById('vsubmit');
+    var verr = document.getElementById('verr');
+    if (type === 'recovery') {
+      document.getElementById('vtitle').textContent = 'Nouveau mot de passe';
+      document.getElementById('vtext').textContent = 'Touche le bouton pour choisir ton nouveau mot de passe.';
+      vbtn.textContent = 'Continuer';
+    } else if (type === 'email_change') {
+      document.getElementById('vtitle').textContent = 'Confirme ta nouvelle adresse';
+      document.getElementById('vtext').textContent = 'Touche le bouton pour l’utiliser avec Volta.';
+    }
+    show('verify');
+    document.getElementById('vform').addEventListener('submit', function (e) {
+      e.preventDefault();
+      vbtn.disabled = true;
+      verr.textContent = '';
+      fetch(SUPABASE_URL + '/auth/v1/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: ANON_KEY },
+        body: JSON.stringify({ type: type, token_hash: hash })
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (!r.ok) {
+            if (r.status >= 500) { verr.textContent = 'Ça n’a pas marché. Réessaie dans un instant.'; vbtn.disabled = false; return; }
+            return show('failed');
+          }
+          hash = null;
+          if (type === 'recovery') {
+            if (!j.access_token) return show('failed');
+            return startRecovery(j.access_token);
+          }
+          return show('confirmed');
+        });
+      }).catch(function () {
+        verr.textContent = 'Pas de connexion. Réessaie dans un instant.';
+        vbtn.disabled = false;
+      });
+    });
+    return;
+  }
+
+  if (type === 'recovery' && token) return startRecovery(token);
+
+  function startRecovery(t) {
+    token = t;
     show('recovery');
     var form = document.getElementById('pwd');
     var err = document.getElementById('perr');
@@ -118,7 +176,6 @@
         btn.disabled = false;
       });
     });
-    return;
   }
   // Lien vérifié par Supabase et renvoyé avec un code : l'adresse est confirmée.
   if (q.get('code') && type !== 'recovery') return show('confirmed');
