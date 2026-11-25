@@ -71,8 +71,10 @@
   // Clé publique (anon) : la même que dans l'app, faite pour être publique.
   var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlidnVxZmhoY3VoaGlxdWd0YmhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MTc0MjYsImV4cCI6MjExMTE5MzQyNn0.Yp3wbCP8cA1HDLNVvTJyzOCpP6eTDMXCQGC1b1Wu7Eg';
 
-  var raw = location.hash.replace(/^#/, '') || location.search.replace(/^\?/, '');
-  var q = new URLSearchParams(raw);
+  // Supabase met le résultat soit après le # (jeton), soit après le ? (code) :
+  // on lit les deux.
+  var q = new URLSearchParams(location.search.replace(/^\?/, ''));
+  new URLSearchParams(location.hash.replace(/^#/, '')).forEach(function (v, k) { q.set(k, v); });
   history.replaceState(null, '', location.pathname);
 
   function show(id) {
@@ -118,6 +120,8 @@
     });
     return;
   }
+  // Lien vérifié par Supabase et renvoyé avec un code : l'adresse est confirmée.
+  if (q.get('code') && type !== 'recovery') return show('confirmed');
   if (token || type === 'signup' || type === 'email' || type === 'email_change') return show('confirmed');
   return show('failed');
 })();
