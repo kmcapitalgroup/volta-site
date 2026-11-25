@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ton compte · Volta</title>
+<meta name="description" content="Confirmation d’adresse et nouveau mot de passe pour ton compte Volta.">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0B0D11">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D4FF3F'/%3E%3Cpath d='M18 4 8 18h7l-2 10 11-15h-7z' fill='%230B0D11'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="fonts.css?v=202611251900">
+<link rel="stylesheet" href="style.css?v=202611251900">
+<link rel="stylesheet" href="legal.css?v=202611251900">
+<style>
+  .account { max-width: 520px; margin: 0 auto; padding: 48px 16px 80px; }
+  .account .card { padding: 28px; }
+  .account h1 { font-size: clamp(28px, 6vw, 40px); margin: 0 0 12px; }
+  .account p { color: #A9B1BD; }
+  .account form { display: grid; gap: 12px; margin-top: 18px; }
+  .account input { font: inherit; padding: 14px 16px; border-radius: 14px; border: 1px solid #2A303B; background: #12151B; color: #F4F6F8; }
+  .account input:focus { outline: 2px solid #D4FF3F; outline-offset: 1px; }
+  .account .err { color: #FF7A45; min-height: 1.2em; margin: 0; }
+  .account [hidden] { display: none !important; }
+  .account button { cursor: pointer; border: 0; }
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="./" aria-label="Volta, accueil">
+    <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#D4FF3F"/><path d="M18 4 8 18h7l-2 10 11-15h-7z" fill="#0B0D11"/></svg>
+    Volta
+  </a>
+</header>
+<main class="account">
+  <div class="card">
+    <section id="loading"><h1>Un instant…</h1></section>
+
+    <section id="confirmed" hidden>
+      <h1>Adresse confirmée</h1>
+      <p>Ton compte Volta est prêt. Retourne dans l’app et connecte-toi avec ton e-mail et ton mot de passe.</p>
+    </section>
+
+    <section id="recovery" hidden>
+      <h1>Nouveau mot de passe</h1>
+      <p>Choisis un mot de passe d’au moins 8 caractères.</p>
+      <form id="pwd" novalidate>
+        <input id="p1" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe" minlength="8" required>
+        <input id="p2" type="password" autocomplete="new-password" placeholder="Confirme-le" minlength="8" required>
+        <p class="err" id="perr" role="alert"></p>
+        <button class="btn" type="submit" id="psubmit">Enregistrer</button>
+      </form>
+    </section>
+
+    <section id="changed" hidden>
+      <h1>Mot de passe changé</h1>
+      <p>C’est fait. Retourne dans l’app Volta et connecte-toi avec ton nouveau mot de passe.</p>
+    </section>
+
+    <section id="failed" hidden>
+      <h1>Lien expiré</h1>
+      <p id="why">Ce lien n’est plus valable, ou il a déjà servi. Depuis l’app, demande un nouvel e-mail (« Mot de passe oublié » ou nouvelle inscription).</p>
+    </section>
+  </div>
+</main>
+<script>
+// Les liens envoyés par Volta arrivent ici avec le jeton dans le fragment (#),
+// qui n'est jamais envoyé au serveur du site. On l'efface aussitôt de la barre d'adresse.
+(function () {
+  var SUPABASE_URL = 'https://ybvuqfhhcuhhiqugtbha.supabase.co';
+  // Clé publique (anon) : la même que dans l'app, faite pour être publique.
+  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlidnVxZmhoY3VoaGlxdWd0YmhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MTc0MjYsImV4cCI6MjExMTE5MzQyNn0.Yp3wbCP8cA1HDLNVvTJyzOCpP6eTDMXCQGC1b1Wu7Eg';
+
+  var raw = location.hash.replace(/^#/, '') || location.search.replace(/^\?/, '');
+  var q = new URLSearchParams(raw);
+  history.replaceState(null, '', location.pathname);
+
+  function show(id) {
+    ['loading', 'confirmed', 'recovery', 'changed', 'failed'].forEach(function (s) {
+      document.getElementById(s).hidden = s !== id;
+    });
+  }
+
+  var token = q.get('access_token');
+  var type = q.get('type');
+  if (q.get('error') || q.get('error_code')) return show('failed');
+  if (type === 'recovery' && token) {
+    show('recovery');
+    var form = document.getElementById('pwd');
+    var err = document.getElementById('perr');
+    var btn = document.getElementById('psubmit');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var p1 = document.getElementById('p1').value;
+      var p2 = document.getElementById('p2').value;
+      if (p1.length < 8) { err.textContent = 'Au moins 8 caractères.'; return; }
+      if (p1 !== p2) { err.textContent = 'Les deux mots de passe ne sont pas identiques.'; return; }
+      err.textContent = '';
+      btn.disabled = true;
+      fetch(SUPABASE_URL + '/auth/v1/user', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', apikey: ANON_KEY, Authorization: 'Bearer ' + token },
+        body: JSON.stringify({ password: p1 })
+      }).then(function (r) {
+        if (r.ok) { token = null; return show('changed'); }
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          var m = (j && (j.msg || j.message || j.error_description)) || '';
+          if (r.status === 401 || r.status === 403) return show('failed');
+          err.textContent = /weak|short|least/i.test(m) ? 'Mot de passe trop faible, choisis-en un plus long.'
+            : /same|different/i.test(m) ? 'Choisis un mot de passe différent de l’ancien.'
+            : 'Ça n’a pas marché. Réessaie dans un instant.';
+          btn.disabled = false;
+        });
+      }).catch(function () {
+        err.textContent = 'Pas de connexion. Réessaie dans un instant.';
+        btn.disabled = false;
+      });
+    });
+    return;
+  }
+  if (token || type === 'signup' || type === 'email' || type === 'email_change') return show('confirmed');
+  return show('failed');
+})();
+</script>
+</body>
+</html>
